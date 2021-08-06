@@ -1,0 +1,84 @@
+CREATE TABLE IF NOT EXISTS tb_cliente(
+
+	id_cliente serial PRIMARY KEY,
+	nome_cliente varchar(100) NOT NULL,
+	data_nascimento_cliente date NOT NULL,
+	cpf_cliente varchar(20) NOT NULL,
+	telefone_cliente varchar(20) NOT NULL,
+	email_cliente varchar(45) NOT NULL,
+	endereco_cliente varchar (100) NOT NULL
+);
+
+
+create type tp_nivel_funcionario AS ENUM(
+	'administrador', 'operador'
+);
+
+
+create type tp_alternativa AS ENUM(
+	'sim', 'nao'
+);
+
+create type tp_modelo AS ENUM(
+	'pequeno', 'medio', 'grande'
+);
+
+CREATE CAST (varchar AS double precision) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS bool) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS timestamp) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS date) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS integer) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS tp_nivel_funcionario) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS tp_alternativa) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS tp_modelo) WITH INOUT AS IMPLICIT;
+
+CREATE TABLE IF NOT EXISTS tb_funcionario(
+	id_funcionario serial PRIMARY KEY,
+	nome_funcionario varchar(100) NOT NULL,
+	login_funcionario varchar(20) NOT NULL,
+	senha_funcionario varchar(20) NOT NULL,
+	nivel_funcionario tp_nivel_funcionario NOT NULL,
+	ativo_funcionario tp_alternativa NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS tb_marca(
+	id_marca serial PRIMARY KEY,
+	nome_marca varchar(20) NOT NULL,
+	descricao_marca varchar(100)
+);
+
+CREATE TABLE IF NOT EXISTS tb_modelo(
+	id_modelo serial PRIMARY KEY,
+	nome_modelo varchar(100) NOT NULL,
+	descricao_modelo varchar(100),
+	porte_modelo tp_modelo NOT NULL,
+	id_marca_modelo integer NOT NULL,
+	FOREIGN KEY (id_marca_modelo) references tb_marca (id_marca)
+);
+
+CREATE TABLE IF NOT EXISTS tb_carro(
+	id_carro serial PRIMARY KEY,
+	valor_diaria_carro double precision NOT NULL,
+	cor_carro varchar(20) NOT NULL,
+	placa_carro varchar(20) NOT NULL,
+	km_carro integer NOT NULL,
+	fabricacao_carro integer NOT NULL,
+	blindagem_carro tp_alternativa,
+	foto_carro varchar(100) NOT NULL,
+	id_modelo_carro integer NOT NULL,
+	FOREIGN KEY (id_modelo_carro) references tb_modelo (id_modelo)
+);
+
+CREATE TABLE IF NOT EXISTS tb_aluguel(
+	id_aluguel serial PRIMARY KEY,
+	data_aluguel timestamp NOT NULL,
+	data_devolucao_aluguel timestamp NOT NULL,
+	finalizar_aluguel bool NOT NULL,
+	id_cliente_aluguel integer NOT NULL,
+	id_funcionario_aluguel integer NOT NULL,
+	id_carro_aluguel integer NOT NULL,
+	FOREIGN KEY (id_cliente_aluguel) references tb_cliente (id_cliente),
+	FOREIGN KEY (id_funcionario_aluguel) references tb_funcionario (id_funcionario),
+	FOREIGN KEY (id_carro_aluguel) references tb_carro (id_carro)
+);
+
