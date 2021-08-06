@@ -2,4 +2,4 @@
 
 #### Car rental system in java
 
-[!tela](tela.png)
+[!tela](tela.PNG)
